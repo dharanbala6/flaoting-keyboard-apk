@@ -97,7 +97,7 @@ class OverlayService : Service() {
         thread(name = "cheat-injector") {
             Thread.sleep(350) // Let Android return input focus to the game first.
             try {
-                ShizukuInputInjector.inject(code, 40)
+                ShizukuInputInjector.inject(this, code, 40)
             } catch (error: Throwable) {
                 android.os.Handler(mainLooper).post { Toast.makeText(this, error.message ?: "Injection failed", Toast.LENGTH_LONG).show() }
             }

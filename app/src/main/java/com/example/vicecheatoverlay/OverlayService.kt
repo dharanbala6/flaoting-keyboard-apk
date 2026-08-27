@@ -34,8 +34,8 @@ class OverlayService : Service() {
         val pendingIntent = PendingIntent.getActivity(this, 0, Intent(this, MainActivity::class.java), PendingIntent.FLAG_IMMUTABLE)
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(android.R.drawable.ic_dialog_info)
-            .setContentTitle("Vice Cheat Overlay")
-            .setContentText("Floating bubble is active")
+            .setContentTitle("San Andreas Cheat Implementor")
+            .setContentText("Cheat injector bubble is active")
             .setContentIntent(pendingIntent).setOngoing(true).build()
         startForeground(NOTIFICATION_ID, notification)
         windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
@@ -126,5 +126,5 @@ class OverlayService : Service() {
 
     private fun dp(value: Int) = (value * resources.displayMetrics.density).toInt()
 
-    companion object { const val CHANNEL_ID = "vice_overlay"; const val NOTIFICATION_ID = 7 }
+    companion object { const val CHANNEL_ID = "san_andreas_overlay"; const val NOTIFICATION_ID = 7 }
 }

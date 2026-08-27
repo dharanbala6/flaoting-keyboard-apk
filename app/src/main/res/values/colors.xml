@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="vice_pink">#E91E63</color>
-    <color name="vice_dark">#15151B</color>
+    <color name="sa_green">#1FA66A</color>
+    <color name="sa_dark">#15151B</color>
     <color name="white">#FFFFFF</color>
 </resources>

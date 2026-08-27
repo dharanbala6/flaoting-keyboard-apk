@@ -4,17 +4,31 @@ data class Cheat(val code: String, val description: String)
 
 object CheatRepository {
     val cheats = listOf(
-        Cheat("ASPIRINE", "Full Health"),
-        Cheat("PRECIOUSPROTECTION", "Full Armor"),
-        Cheat("LEAVEMEALONE", "Remove Wanted Level"),
-        Cheat("YOUWONTTAKEMEALIVE", "Increase Wanted Level"),
-        Cheat("PANZER", "Spawn Tank"),
-        Cheat("BIGBANG", "Destroy Cars"),
-        Cheat("ALOVELYDAY", "Sunny Weather"),
-        Cheat("ONSPEED", "Faster Gameplay"),
-        Cheat("BOOOOOORING", "Slower Gameplay"),
-        Cheat("THUGSTOOLS", "Weapon Set 1"),
-        Cheat("PROFESSIONALTOOLS", "Weapon Set 2"),
-        Cheat("NUTTERTOOLS", "Weapon Set 3")
+        Cheat("HESOYAM", "Health, Armor, \$250k"),
+        Cheat("BAGUVIX", "High Health Resistance"),
+        Cheat("CVWKXAM", "Infinite Oxygen"),
+        Cheat("LXGIWYL", "Weapon Set 1"),
+        Cheat("PROFESSIONALSKIT", "Weapon Set 2"),
+        Cheat("UZUMYMW", "Weapon Set 3"),
+        Cheat("AEZAKMI", "Lock Wanted Level"),
+        Cheat("ASNAEB", "Clear Wanted Level"),
+        Cheat("OSRBLHH", "Increase Wanted Level"),
+        Cheat("AIWPRTON", "Spawn Rhino Tank"),
+        Cheat("ROCKETMAN", "Spawn Jetpack"),
+        Cheat("JUMPJET", "Spawn Hydra"),
+        Cheat("OHDUDE", "Spawn Hunter"),
+        Cheat("KGGGDKP", "Spawn Vortex"),
+        Cheat("CPKTNWT", "Destroy Vehicles"),
+        Cheat("SPEEDFREAK", "All Cars Have Nitro"),
+        Cheat("YLTEICZ", "Aggressive Drivers"),
+        Cheat("PLEASANTLYWARM", "Sunny Weather"),
+        Cheat("TOODAMNHOT", "Very Sunny Weather"),
+        Cheat("AUIFRVQS", "Rainy Weather"),
+        Cheat("CFVFGMJ", "Foggy Weather"),
+        Cheat("NIGHTPROWLER", "Midnight Clock"),
+        Cheat("PPGWJHT", "Faster Gameplay"),
+        Cheat("LIYOAAY", "Slower Gameplay"),
+        Cheat("BUFFMEUP", "Maximum Muscle"),
+        Cheat("KVGYZQK", "Skinny Player")
     )
 }

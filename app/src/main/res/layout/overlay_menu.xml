@@ -4,7 +4,7 @@
     android:orientation="vertical" android:padding="12dp"
     android:background="@drawable/panel_background">
     <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:text="VICE CHEATS" android:textColor="@color/white" android:textStyle="bold"
+        android:text="SAN ANDREAS CHEATS" android:textColor="@color/white" android:textStyle="bold"
         android:textSize="18sp" android:gravity="center" />
     <ScrollView android:layout_width="match_parent" android:layout_height="320dp"
         android:layout_marginTop="8dp">

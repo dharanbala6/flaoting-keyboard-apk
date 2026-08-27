@@ -14,5 +14,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Vice Cheat Overlay"
+rootProject.name = "San Andreas Cheat Implementor"
 include(":app")

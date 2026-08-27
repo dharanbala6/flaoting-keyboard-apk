@@ -57,13 +57,13 @@ class MainActivity : AppCompatActivity() {
     private fun refreshStatus() {
         runOnUiThread {
             val shizuku = when {
-                !ShizukuInputInjector.isInstalled(this) -> "not installed"
-                !ShizukuInputInjector.isRunning() -> "installed, but not running"
-                ShizukuInputInjector.hasPermission() -> "running and permitted"
-                else -> "running; permission required"
+                !ShizukuInputInjector.isInstalled(this) -> "Install Shizuku to enable injection"
+                !ShizukuInputInjector.isRunning() -> "Start Shizuku to enable injection"
+                ShizukuInputInjector.hasPermission() -> "Ready to inject cheats"
+                else -> "Tap Grant Injector Access"
             }
             val overlay = if (Settings.canDrawOverlays(this)) "granted" else "required"
-            statusText.text = "Shizuku: $shizuku\nOverlay permission: $overlay"
+            statusText.text = "Injector: $shizuku\nOverlay permission: $overlay"
         }
     }
 }

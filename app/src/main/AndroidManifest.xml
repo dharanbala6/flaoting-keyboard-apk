@@ -11,9 +11,9 @@
 
     <application
         android:allowBackup="true"
-        android:label="Vice Cheat Overlay"
+        android:label="SA Cheat Implementor"
         android:supportsRtl="true"
-        android:theme="@style/Theme.ViceCheatOverlay">
+        android:theme="@style/Theme.SanAndreasCheatImplementor">
         <activity
             android:name=".MainActivity"
             android:exported="true">

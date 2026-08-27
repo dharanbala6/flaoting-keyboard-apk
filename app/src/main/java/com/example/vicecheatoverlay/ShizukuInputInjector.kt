@@ -34,7 +34,7 @@ object ShizukuInputInjector {
 
     @Throws(IOException::class, SecurityException::class)
     fun inject(context: Context, code: String, delayMs: Long = 40L) {
-        require(hasPermission()) { "Shizuku permission is not granted" }
+        require(hasPermission()) { "Grant injector access before sending cheats" }
         val normalized = code.uppercase().filter { it in 'A'..'Z' || it in '0'..'9' }
         require(normalized.isNotEmpty()) { "Cheat code is empty" }
         val latch = CountDownLatch(1)

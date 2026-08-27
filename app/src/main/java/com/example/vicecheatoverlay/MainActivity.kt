@@ -22,11 +22,11 @@ class MainActivity : AppCompatActivity() {
 
     private val binderListener = Shizuku.OnBinderReceivedListener {
         Log.d(TAG, "Shizuku binder received")
-        refreshStatus()
+        updateFromShizukuBinder("Shizuku not running")
     }
     private val binderDeadListener = Shizuku.OnBinderDeadListener {
-        Log.d(TAG, "Shizuku binder dead")
-        refreshStatus()
+        Log.d(TAG, "Shizuku binder died")
+        showStatus("Shizuku not running")
     }
     private val permissionListener = Shizuku.OnRequestPermissionResultListener { requestCode, grantResult ->
         if (requestCode == ShizukuInputInjector.REQUEST_CODE) {
@@ -47,18 +47,14 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         statusText = findViewById(R.id.statusText)
         injectorButton = findViewById(R.id.shizukuButton)
-        Shizuku.addBinderReceivedListenerSticky(binderListener)
+        Shizuku.addBinderReceivedListener(binderListener)
         Shizuku.addBinderDeadListener(binderDeadListener)
         Shizuku.addRequestPermissionResultListener(permissionListener)
+        refreshStatus()
 
         injectorButton.setOnClickListener {
             Log.d("SAInjector", "Get Injector Access clicked")
-            try {
-                requestInjectorAccess()
-            } catch (e: Throwable) {
-                Log.e(TAG, "Injector access error", e)
-                showStatus("Injector access error")
-            }
+            requestInjectorAccess()
         }
         findViewById<Button>(R.id.overlayButton).setOnClickListener {
             startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName")))
@@ -77,7 +73,10 @@ class MainActivity : AppCompatActivity() {
         findViewById<Button>(R.id.stopButton).setOnClickListener { stopService(Intent(this, OverlayService::class.java)) }
     }
 
-    override fun onResume() { super.onResume(); refreshStatus() }
+    override fun onResume() {
+        super.onResume()
+        refreshStatus()
+    }
 
     override fun onDestroy() {
         Shizuku.removeBinderReceivedListener(binderListener)
@@ -87,61 +86,66 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun requestInjectorAccess() {
-        val available = try {
-            Shizuku.pingBinder()
+        try {
+            val available = Shizuku.pingBinder()
+            Log.d(TAG, "Shizuku binder available = $available")
+
+            if (!available) {
+                permissionDenied = false
+                showStatus("Waiting for Shizuku connection")
+                return
+            }
+
+            val permission = Shizuku.checkSelfPermission()
+            Log.d(TAG, "Shizuku permission result = $permission")
+            if (permission == PackageManager.PERMISSION_GRANTED) {
+                Log.d(TAG, "Shizuku permission granted")
+                permissionDenied = false
+                showAccessGranted()
+                return
+            }
+
+            Log.d(TAG, "Requesting Shizuku permission")
+            Shizuku.requestPermission(ShizukuInputInjector.REQUEST_CODE)
         } catch (e: Throwable) {
             Log.e(TAG, "Injector access error", e)
-            false
+            showStatus("Injector access error")
         }
-        Log.d(TAG, "Shizuku binder available = $available")
+    }
 
-        if (!available) {
-            permissionDenied = false
-            showStatus("Shizuku is not running")
-            return
+    private fun updateFromShizukuBinder(unavailableMessage: String) {
+        try {
+            val available = Shizuku.pingBinder()
+            Log.d(TAG, "Shizuku binder available = $available")
+
+            if (!available) {
+                showStatus(unavailableMessage)
+                return
+            }
+
+            val permission = Shizuku.checkSelfPermission()
+            Log.d(TAG, "Shizuku permission result = $permission")
+            if (permission == PackageManager.PERMISSION_GRANTED) {
+                permissionDenied = false
+                showAccessGranted()
+            } else if (permissionDenied) {
+                showStatus("Permission denied")
+            } else {
+                showStatus("Permission required")
+            }
+        } catch (e: Throwable) {
+            Log.e(TAG, "Injector access error", e)
+            showStatus("Shizuku not running")
         }
-
-        val permission = Shizuku.checkSelfPermission()
-        Log.d(TAG, "Shizuku permission result = $permission")
-        if (permission == PackageManager.PERMISSION_GRANTED) {
-            Log.d(TAG, "Shizuku permission granted")
-            permissionDenied = false
-            showAccessGranted()
-            return
-        }
-
-        Log.d(TAG, "Requesting Shizuku permission")
-        Shizuku.requestPermission(ShizukuInputInjector.REQUEST_CODE)
     }
 
     private fun refreshStatus() {
-        runOnUiThread {
-            val shizuku = when {
-                !ShizukuInputInjector.isInstalled(this) -> {
-                    injectorButton.text = "Get Injector Access"
-                    "Shizuku not installed"
-                }
-                !isShizukuRunning() -> {
-                    injectorButton.text = "Get Injector Access"
-                    "Shizuku not running"
-                }
-                checkInjectorPermission() == PackageManager.PERMISSION_GRANTED -> {
-                    permissionDenied = false
-                    injectorButton.text = "Injector access granted \u2713"
-                    "Injector access granted \u2713"
-                }
-                permissionDenied -> {
-                    injectorButton.text = "Get Injector Access"
-                    "Permission denied"
-                }
-                else -> {
-                    injectorButton.text = "Get Injector Access"
-                    "Permission required"
-                }
-            }
-            val overlay = if (Settings.canDrawOverlays(this)) "granted" else "required"
-            statusText.text = "$shizuku\nOverlay permission: $overlay"
+        if (!ShizukuInputInjector.isInstalled(this)) {
+            showStatus("Shizuku not installed")
+            return
         }
+
+        updateFromShizukuBinder("Shizuku not running")
     }
 
     private fun showStatus(message: String) {
@@ -159,22 +163,6 @@ class MainActivity : AppCompatActivity() {
             injectorButton.text = message
             statusText.text = "$message\nOverlay permission: $overlay"
         }
-    }
-
-    private fun isShizukuRunning(): Boolean = try {
-        Shizuku.pingBinder()
-    } catch (error: Throwable) {
-        Log.e(TAG, "Injector access error", error)
-        false
-    }
-
-    private fun checkInjectorPermission(): Int = try {
-        val result = Shizuku.checkSelfPermission()
-        Log.d(TAG, "Shizuku permission result = $result")
-        result
-    } catch (error: Throwable) {
-        Log.e(TAG, "Injector access error", error)
-        PackageManager.PERMISSION_DENIED
     }
 
     companion object {

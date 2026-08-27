@@ -4,3 +4,10 @@ local.properties
 *.iml
 .idea/
 .dist/
+.tmp_jdk/
+.tmp_android_sdk/
+*.apk
+*.ap_
+*.aab
+*.dex
+captures/

@@ -27,7 +27,7 @@ object ShizukuInputInjector {
     } catch (_: Throwable) { false }
 
     fun requestPermission() {
-        if (isRunning() && !hasPermission() && !Shizuku.shouldShowRequestPermissionRationale()) {
+        if (isRunning() && !hasPermission()) {
             Shizuku.requestPermission(REQUEST_CODE)
         }
     }

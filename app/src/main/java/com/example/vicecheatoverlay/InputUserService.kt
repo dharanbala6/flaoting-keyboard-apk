@@ -3,7 +3,7 @@ package com.example.vicecheatoverlay
 import android.view.KeyEvent
 import java.io.IOException
 
-/** Runs in Shizuku's privileged user-service process (shell/root identity). */
+/** Runs in Shizuku's privileged user-service process. */
 class InputUserService : IInputUserService.Stub() {
     override fun inject(code: String, delayMs: Long) {
         code.forEach { character ->

@@ -8,6 +8,7 @@ import android.content.Intent
 import android.graphics.PixelFormat
 import android.os.IBinder
 import android.provider.Settings
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -93,15 +94,30 @@ class OverlayService : Service() {
 
     private fun sendCheat(rawCode: String) {
         val code = rawCode.uppercase().filter { it in 'A'..'Z' || it in '0'..'9' }
+        Log.d(TAG, "Cheat selected: $code")
         closeMenu()
+        releaseOverlayFocus()
         thread(name = "cheat-injector") {
-            Thread.sleep(350) // Let Android return input focus to the game first.
+            Thread.sleep(300) // Let Android return input focus to the game first.
             try {
+                Log.d(TAG, "Starting injection: $code")
                 ShizukuInputInjector.inject(this, code, 40)
+                Log.d(TAG, "Injection finished")
             } catch (error: Throwable) {
-                android.os.Handler(mainLooper).post { Toast.makeText(this, error.message ?: "Injection failed", Toast.LENGTH_LONG).show() }
+                Log.e(TAG, "Injection failed", error)
+                android.os.Handler(mainLooper).post {
+                    Toast.makeText(this, error.message ?: "Injection failed", Toast.LENGTH_LONG).show()
+                }
             }
         }
+    }
+
+    private fun releaseOverlayFocus() {
+        val view = bubble ?: return
+        if (!view.isAttachedToWindow) return
+        bubbleParams.flags = bubbleParams.flags or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+        windowManager.updateViewLayout(view, bubbleParams)
+        Log.d(TAG, "Overlay focus released")
     }
 
     private fun closeMenu() {
@@ -126,5 +142,9 @@ class OverlayService : Service() {
 
     private fun dp(value: Int) = (value * resources.displayMetrics.density).toInt()
 
-    companion object { const val CHANNEL_ID = "san_andreas_overlay"; const val NOTIFICATION_ID = 7 }
+    companion object {
+        private const val TAG = "SAInjector"
+        const val CHANNEL_ID = "san_andreas_overlay"
+        const val NOTIFICATION_ID = 7
+    }
 }
